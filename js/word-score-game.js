@@ -148,10 +148,155 @@ function getAvailableLetter(){
 }
 
 
-function findWordToUse(){
- //TODO Your job starts here.
-	alert("Your code needs to go here");	
+/**
+ * 组合排列 + 各个组合的全排列
+ **/
+var theWordToUse;
+
+function findWordToUse() {
+
+    var maxPoint = 0;
+    var letters = new Array();
+
+    var pointMap = new Map();
+    for (var i = 0; i < YOUR_HAND.length; i++) {
+        letters[i] = YOUR_HAND[i].letter;
+        pointMap.set(YOUR_HAND[i].letter, YOUR_HAND[i].pointsWhenLettersUsed);
+    }
+
+    // 获取所有组合
+    var letterGroup = getGroup(letters);
+
+    var theWordToUseDispplay;
+
+    var j = 0;
+    for (j; j < letterGroup.length; j++) {
+        var point = 0;
+        var letterJudge = letterGroup[j];
+        //console.log(letterJudge);
+        var k = 0;
+        for (k; k < letterJudge.length; k++) {
+            point = point + pointMap.get(letterJudge.charAt(k));
+        }
+
+        // 验证此组合的全全排列是否可以组成一个单词
+        var array = letterJudge.split("");
+        var flag = findWordToUseCore(array, 0);
+        if (flag && point > maxPoint) {
+            maxPoint = point;
+            theWordToUseDispplay = theWordToUse;
+        }
+    }
+    if (theWordToUseDispplay == null || theWordToUseDispplay.length == 0) {
+        alert("此序列无法组成一个单词，请retire your hand!");
+    } else {
+        $("#human-word-input").val(theWordToUseDispplay);
+    }
 }
+
+
+/**
+ *  获得所有组合
+ */
+function getGroup(data, index = 0, group = []) {
+    var needApply = new Array();
+    needApply.push(data[index]);
+    for (var i = 0; i < group.length; i++) {
+        needApply.push(group[i] + data[index]);
+    }
+    group.push.apply(group, needApply);
+
+    if (index + 1 >= data.length) {
+        return group;
+    } else {
+        return getGroup(data, index + 1, group);
+    }
+}
+
+/**
+ * 单词全排列递归函数
+ **/
+function findWordToUseCore(charArray, k) {
+    var i = k;
+    var hasFound = false;
+    for (i; i < charArray.length; i++) {
+        var temp1 = charArray[k];
+        charArray[k] = charArray[i];
+        charArray[i] = temp1;
+
+        // 如果找到一个，立马返回
+        hasFound = findWordToUseCore(charArray, k + 1);
+        if (hasFound) {
+            return true;
+        }
+
+        // 回溯
+        var temp2 = charArray[k];
+        charArray[k] = charArray[i];
+        charArray[i] = temp2;
+
+    }
+
+    if (k == charArray.length) {
+        var strArrays = wildcardSolution(charArray);
+        for (var j = 0; j < strArrays.length; j++) {
+            if (isThisAWord(strArrays[j])) {
+                theWordToUse = charArray.join("");
+                //console.log(strArrays[j]);
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+/**
+ * 进阶任务：解决 "_" 作为通配符
+ * 两个前提：1. 上边我们已经得到了字符串的所有组合，所以只需暴力替换 ”_“ 为 ”A-Z“即可
+ *         2. 由字母包可知一个待判断的串最多有两个 通配符 “_”
+ */
+function wildcardSolution(wordAarry) {
+    var wordAarryTemp = new Array();
+    index1 = -1;
+    index2 = -1;
+    for (i = 0; i < wordAarry.length; i++) {
+        wordAarryTemp[i] = wordAarry[i];
+        if (wordAarry[i] == '_') {
+            if (index1 == -1) {
+                index1 = i;
+            } else {
+                index2 = i;
+            }
+        }
+    }
+    var arrays = new Array();
+    if (index1 == -1 && index2 == -1) {
+        arrays.push(wordAarryTemp.join(""));
+        return arrays;
+    }
+    if (index1 != -1 && index2 == -1) {
+        for (k = 0; k < 26; k++) {
+            wordAarryTemp[index1] = String.fromCharCode(65 + k);
+            arrays.push(wordAarryTemp.join(""));
+        }
+        return arrays;
+    }
+
+    if (index1 != -1 && index2 != -1) {
+        var i = 0;
+        var j = 0;
+        for (i = 0; i < 26; i++) {
+            wordAarryTemp[index1] = String.fromCharCode(65 + i);
+            for (j = 0; j < 26; j++) {
+                wordAarryTemp[index2] = String.fromCharCode(65 + j);
+                arrays.push(wordAarryTemp.join(""));
+            }
+        }
+        return arrays;
+    }
+
+}
+
 function humanFindWordToUse(){
 	
 	 var humanFoundWord = $( "#human-word-input").val();
