@@ -301,7 +301,18 @@ function humanFindWordToUse(){
 	
 	 var humanFoundWord = $( "#human-word-input").val();
 	 console.log("Checking human workd of:" + humanFoundWord);
-	 if(isThisAWord(humanFoundWord)){
+	 
+	 // 处理通配符 “_”,要不然当判断带有通配符 “_” 会出现问题
+     var wordAarry = wildcardSolution(humanFoundWord.split(""));
+     var flag = false;
+     for (i = 0; i < wordAarry.length; i++) {
+         if (isThisAWord(wordAarry[i])) {
+             console.log(wordAarry[i]);
+             flag = true;
+         }
+     }
+	 
+	 if(flag){
 		 if(haveLettersForWord(humanFoundWord)){
 			 successfullyAddedWord(humanFoundWord);
 		 }else{
