@@ -326,7 +326,7 @@ function humanFindWordToUse(){
 
 
 function successfullyAddedWord(foundWord){
-	$( "#word-history-list").append("<li>" + foundWord + "</li>");
+	$( "#word-history-list").append("<li style='font-size:x-large; margin-left:300px'>" + foundWord + "</li>");
 	clearClasses();
 	takeOutUsedLetters();
 	addNumbersFromBag();
