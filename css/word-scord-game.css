@@ -110,7 +110,7 @@
 
 .text {
     position: absolute;
-    top: 35%;
+    top: 41%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     -moz-transform: translate(-50%, -50%);
@@ -138,17 +138,17 @@
 
 .button1 {
     background-color: #008CBA;
-    top: 30%;
+    top: 33%;
 }
 
 .button2 {
     background-color: #008CBA;
-    left: 62%;
-    top: 35%;
+    left: 65%;
+    top: 41%;
 }
 
 .button3 {
     background-color: #f44336;
-    top: 40%;
+    top: 48%;
 }
 
